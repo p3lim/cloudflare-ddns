@@ -6,6 +6,7 @@ on:
       - 'master'
     paths:
       - 'Dockerfile'
+      - 'entrypoint.sh'
 
 env:
   REGISTRY: ghcr.io
