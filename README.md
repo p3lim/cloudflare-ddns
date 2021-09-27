@@ -1,6 +1,6 @@
 # cloudflare-ddns
 
-This repository builds a container image that will update [CloudFlare]() DNS records when run.
+This repository builds a container image that will update [CloudFlare](https://cloudflare.com) DNS records when run.
 
 It is configured entirely by environment variables:
 
