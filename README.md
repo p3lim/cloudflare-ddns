@@ -54,6 +54,6 @@ spec:
 
 Steps have been taken to ensure the longevity of this repository and its image:
 
-- A [workflow](https://github.com/p3lim/cloudflare-ddns/blob/master/.github/workflows/build.yml) watches for changes to the Dockerfile, which builds and pushes the image on changes.
+- A [workflow](https://github.com/p3lim/cloudflare-ddns/blob/master/.github/workflows/build.yml) watches for changes to the Dockerfile, which builds and pushes the image.
 - [Dependabot](https://github.com/dependabot) watches for updates to the base image and creates pull requests when there's a new version.
 - [Permissive license](https://github.com/p3lim/cloudflare-ddns/blob/master/LICENSE.txt) so anyone can take over maintenance should this repository become stale.
