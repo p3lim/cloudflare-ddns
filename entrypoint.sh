@@ -21,7 +21,6 @@ api(){
 	res="$(curl -sS -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" "https://api.cloudflare.com/client/v4/$path" "$@")"
 	if [ "$(jq -r '.success' <<< "$res")" = "false" ]; then
 		jq -r '.errors[] | .message' <<< "$res" >&2
-		jq -r '.' <<< "$res" >&2
 		exit 1
 	fi
 
