@@ -27,24 +27,49 @@ api(){
 	echo "$res"
 }
 
-# make sure the token is working
-api 'user/tokens/verify' | jq -r '.messages[] | .message'
+update(){
+	# get the public IP
+	for url in "http://ifconfig.me/ip" "http://ifconfig.co" "http://ipv4.icanhazip.com"; do
+		IP="$(curl -s "$url")"
+		[ -n "$IP" ] && break
+	done
 
-# iterate through the zones
-while read -r zone_id zone; do
-	# iterate through the records
-	echo "Enumerating '$zone' ($zone_id)"
-	while read -r record_id record value ttl proxied; do
-		# check if we're supposted to monitor this record
-		if grep -qE "(^|\s)$record(\s|$)" <<< "$RECORDS"; then
-			# check if the record value differs from the public IP
-			if [[ "$value" != "$IP" ]]; then
-				echo "Updating $record: $value -> $IP"
-				api "zones/$zone_id/dns_records/$record_id" -XPUT \
-					-d "{\"content\":\"$IP\",\"type\":\"A\",\"name\":\"$record\",\"ttl\":$ttl,\"proxied\":$proxied}" >/dev/null
-			else
-				echo "Record '$record' is up to date ($value)"
+	if [ -z "$IP" ]; then
+		echo "Could not get public IP"
+		exit 1
+	fi
+
+	# make sure the token is working
+	api 'user/tokens/verify' | jq -r '.messages[] | .message'
+
+	# iterate through the zones
+	while read -r zone_id zone; do
+		# iterate through the records
+		echo "Enumerating '$zone' ($zone_id)"
+		while read -r record_id record value ttl proxied; do
+			# check if we're supposted to monitor this record
+			if grep -qE "(^|\s)$record(\s|$)" <<< "$RECORDS"; then
+				# check if the record value differs from the public IP
+				if [[ "$value" != "$IP" ]]; then
+					echo "Updating $record: $value -> $IP"
+					api "zones/$zone_id/dns_records/$record_id" -XPUT \
+						-d "{\"content\":\"$IP\",\"type\":\"A\",\"name\":\"$record\",\"ttl\":$ttl,\"proxied\":$proxied}" >/dev/null
+				else
+					echo "Record '$record' is up to date ($value)"
+				fi
 			fi
-		fi
-	done < <(api "zones/$zone_id/dns_records" | jq -r '.result[] | select(.type == "A") | "\(.id) \(.name) \(.content) \(.ttl) \(.proxied)"')
-done < <(api 'zones' | jq -r '.result[] | "\(.id) \(.name)"')
+		done < <(api "zones/$zone_id/dns_records" | jq -r '.result[] | select(.type == "A") | "\(.id) \(.name) \(.content) \(.ttl) \(.proxied)"')
+	done < <(api 'zones' | jq -r '.result[] | "\(.id) \(.name)"')
+}
+
+if [[ -z "$INTERVAL" ]]; then
+	trap 'exit 0' SIGINT SIGTERM
+
+	while true; do
+		update
+		echo "Sleeping for $INTERVAL seconds"
+		sleep "$INTERVAL"
+	done
+else
+	update
+fi
