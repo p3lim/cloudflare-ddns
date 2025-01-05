@@ -9,6 +9,8 @@ It is configured entirely by environment variables:
 	- Zone, DNS, Edit
 - `RECORDS`: a space-separated list of record names to update
 	- these must be fully-qualified domain names, e.g. `RECORDS="my.example.org example.org"`
+- `INTERVAL`: a number value in seconds (optional)
+  - this will turn the script/image into a daemon
 
 ### Usage
 
