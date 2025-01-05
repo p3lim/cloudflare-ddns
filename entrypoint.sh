@@ -61,6 +61,8 @@ update(){
 }
 
 if [[ -z "$INTERVAL" ]]; then
+	update
+else
 	trap 'exit 0' SIGINT SIGTERM
 
 	while true; do
@@ -68,6 +70,4 @@ if [[ -z "$INTERVAL" ]]; then
 		echo "Sleeping for $INTERVAL seconds"
 		sleep "$INTERVAL"
 	done
-else
-	update
 fi
