@@ -2,14 +2,12 @@
 
 set -eo pipefail
 
-# get the public IP
-for url in "http://ifconfig.me/ip" "http://ifconfig.co" "http://ipv4.icanhazip.com"; do
-	IP="$(curl -s "$url")"
-	[ -n "$IP" ] && break
-done
-
-if [ -z "$IP" ]; then
-	echo "Could not get public IP"
+if [[ -z "$API_TOKEN" ]]; then
+	echo 'Missing environment variable API_TOKEN'
+	exit 1
+fi
+if [[ -z "$RECORDS" ]]; then
+	echo 'Missing environment variable RECORDS'
 	exit 1
 fi
 
