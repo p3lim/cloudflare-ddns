@@ -1,4 +1,4 @@
-FROM docker.io/curlimages/curl:8.12.1
+FROM docker.io/curlimages/curl:8.13.0
 
 USER root
 RUN apk add --no-cache bash jq
