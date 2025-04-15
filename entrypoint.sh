@@ -3,8 +3,12 @@
 set -eo pipefail
 
 if [[ -z "$API_TOKEN" ]]; then
-	echo 'Missing environment variable API_TOKEN'
-	exit 1
+	if [[ -r "$API_TOKEN_FILE" ]]; then
+		API_TOKEN="$(< "$API_TOKEN_FILE")"
+	else
+		echo 'Missing environment variable API_TOKEN'
+		exit 1
+	fi
 fi
 if [[ -z "$RECORDS" ]]; then
 	echo 'Missing environment variable RECORDS'

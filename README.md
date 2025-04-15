@@ -7,6 +7,7 @@ It is configured entirely by environment variables:
 - `API_TOKEN`: a [custom API token](https://dash.cloudflare.com/profile/api-tokens) for one or multiple zones, with the following permissions:
 	- Zone, Zone, Read
 	- Zone, DNS, Edit
+  - alternatively; `API_TOKEN_FILE`: a file containing the API token
 - `RECORDS`: a space-separated list of record names to update
 	- these must be fully-qualified domain names, e.g. `RECORDS="my.example.org example.org"`
 - `INTERVAL`: a number value in seconds (optional)
